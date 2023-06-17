@@ -19,6 +19,7 @@ func CreatePost(c *gin.Context) {
 	post := models.Post{Title: body.Title, Body: body.Body}
 	result := initializers.DB.Create(&post)
 
+	// Handles Error
 	if result.Error != nil {
 		c.JSON(400, gin.H{
 			"message": "Error",
@@ -35,8 +36,13 @@ func CreatePost(c *gin.Context) {
 func GetAllPost(c *gin.Context) {
 	// Get the posts
 	var posts []models.Post
-	initializers.DB.Find(&posts)
-
+	result := initializers.DB.Find(&posts)
+	if result.Error != nil {
+		c.JSON(500, gin.H{
+			"message": "Something went wrong !!",
+			"Error":   result.Error,
+		})
+	}
 	// Return it
 	c.JSON(200, gin.H{
 		"Posts": posts,
@@ -50,7 +56,15 @@ func GetPost(c *gin.Context) {
 	id := c.Param("id")
 	// Find the POST
 	var post models.Post
-	initializers.DB.First(&post, id)
+	result := initializers.DB.First(&post, id)
+
+	// Error Handling
+	if result.Error != nil {
+		c.JSON(500, gin.H{
+			"message": "Something went wrong !!",
+			"Error":   result.Error,
+		})
+	}
 	// Return It
 	c.JSON(200, gin.H{
 		"Post": post,
@@ -72,10 +86,18 @@ func UpdatePost(c *gin.Context) {
 	var post models.Post
 	initializers.DB.First(&post, id)
 	// Update it
-	initializers.DB.Model(&post).Updates(models.Post{
+	result := initializers.DB.Model(&post).Updates(models.Post{
 		Title: body.Title,
 		Body:  body.Body,
 	})
+
+	// Error Handling
+	if result.Error != nil {
+		c.JSON(200, gin.H{
+			"message": "Something Went Wrong",
+			"Error":   result.Error,
+		})
+	}
 	// Return It
 	c.JSON(200, gin.H{
 		"Updated Post": post,
@@ -89,7 +111,15 @@ func DeletePost(c *gin.Context) {
 	// Find and delete post
 	post := models.Post{}
 
-	initializers.DB.Delete(&post, id)
+	result := initializers.DB.Delete(&post, id)
+
+	// Error Handling
+	if result.Error != nil {
+		c.JSON(200, gin.H{
+			"message": "Something Went Wrong",
+			"Error":   result.Error,
+		})
+	}
 
 	c.JSON(200, gin.H{
 		"message": "Deleted Post Successfully!!!",
