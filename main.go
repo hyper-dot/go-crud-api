@@ -17,6 +17,10 @@ func main() {
 	fmt.Println("hello123")
 	r := gin.Default()
 	r.POST("/", controllers.CreatePost)
+	r.GET("/", controllers.GetAllPost)
+	r.GET("/:id", controllers.GetPost)
+	r.PUT("/:id", controllers.UpdatePost)
+	r.DELETE("/:id", controllers.DeletePost)
 
 	r.Run()
 }
