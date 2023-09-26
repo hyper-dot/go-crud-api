@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
+
 	"github.com/hyper-dot/go-crud-api/initializers"
 	"github.com/hyper-dot/go-crud-api/models"
 )
